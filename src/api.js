@@ -306,18 +306,38 @@ export async function deleteOffer(offerId) {
     }
 }
 
-//asdasdasdasda
-//komment
+// ========== BEÉRKEZŐ AJÁNLATOK LEKÉRÉSE ==========
+export async function getIncomingOffers() {
+    try {
+        const res = await fetch(`${BASE}/incoming-offers`, {
+            method: 'GET',
+            credentials: 'include',
+            mode: 'cors',
+            headers: {'Content-Type': 'application/json'}
+        })
+        const data = await res.json()
+        if(!res.ok) return {result: false, message: data.message, offers: []}
+        else return {result: true, offers: data.offers || []}
+    } catch (error) {
+        console.error("Fetch error:", error)
+        return {result: false, message: "Network error: " + error.message, offers: []}
+    }
+}
 
-
-
-
-
-//komment//komment//komment//komment
-
-//komment
-//komment
-//komment
-//komment
-
-
+// ========== AJÁNLAT ELUTASÍTÁSA ==========
+export async function rejectOffer(offerId) {
+    try {
+        const res = await fetch(`${BASE}/reject-offer/${offerId}`, {
+            method: 'POST',
+            credentials: 'include',
+            mode: 'cors',
+            headers: {'Content-Type': 'application/json'}
+        })
+        const data = await res.json()
+        if(!res.ok) return {result: false, message: data.message}
+        else return {result: true, message: data.message}
+    } catch (error) {
+        console.error("Fetch error:", error)
+        return {result: false, message: "Network error: " + error.message}
+    }
+}

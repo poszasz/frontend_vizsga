@@ -9,6 +9,9 @@ import {
   deleteListing,
   getMyPendingOffers,
   deleteOffer,
+  getIncomingOffers,   // ÚJ
+  acceptOffer,         // ÚJ
+  rejectOffer,         // ÚJ
   checkAuth,
   logout,
 } from "../api";
@@ -17,6 +20,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import FilterButtons from "../components/FilterButtons";
 import ListingCard from "../components/ListingCard";
 import OfferCard from "../components/OfferCard";
+import IncomingOfferCard from "../components/IncomingOfferCard";  // ÚJ komponens
 import Modal from "../components/Modal";
 import Card from "../components/Card";
 
@@ -26,6 +30,7 @@ export default function MarketPage() {
   const [filteredListings, setFilteredListings] = useState([]);
   const [myCards, setMyCards] = useState([]);
   const [myPendingOffers, setMyPendingOffers] = useState([]);
+  const [incomingOffers, setIncomingOffers] = useState([]);  // ÚJ
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [selectedListing, setSelectedListing] = useState(null);
@@ -49,7 +54,12 @@ export default function MarketPage() {
         return;
       }
       setUser(user);
-      await Promise.all([loadListings(), loadMyCards(), loadMyPendingOffers()]);
+      await Promise.all([
+        loadListings(),
+        loadMyCards(),
+        loadMyPendingOffers(),
+        loadIncomingOffers(),  // ÚJ
+      ]);
       setLoading(false);
     };
     verifyAuth();
@@ -63,6 +73,16 @@ export default function MarketPage() {
     const res = await getMyPendingOffers();
     if (res.result) setMyPendingOffers(res.offers);
   };
+
+  const loadIncomingOffers = async () => {
+  console.log("Betöltöm a beérkező ajánlatokat...");
+  const res = await getIncomingOffers();
+  console.log("Beérkező ajánlatok válasza:", res);
+  if (res.result) {
+    console.log("Offerek száma:", res.offers.length);
+    setIncomingOffers(res.offers);
+  }
+};
 
   const applyFilter = () => {
     if (!user) return;
@@ -121,7 +141,12 @@ export default function MarketPage() {
       alert("Listing created successfully!");
       setShowPostOfferModal(false);
       setSelectedCardForListing(null);
-      await Promise.all([loadListings(), loadMyCards(), loadMyPendingOffers()]);
+      await Promise.all([
+        loadListings(),
+        loadMyCards(),
+        loadMyPendingOffers(),
+        loadIncomingOffers(),  // ÚJ
+      ]);
     } else {
       alert(res.message || "Failed to create listing");
     }
@@ -140,7 +165,12 @@ export default function MarketPage() {
       alert("Listing deleted successfully!");
       setShowDeleteConfirm(false);
       setListingToDelete(null);
-      await Promise.all([loadListings(), loadMyCards(), loadMyPendingOffers()]);
+      await Promise.all([
+        loadListings(),
+        loadMyCards(),
+        loadMyPendingOffers(),
+        loadIncomingOffers(),  // ÚJ
+      ]);
     } else {
       alert(res.message || "Failed to delete listing");
     }
@@ -159,7 +189,11 @@ export default function MarketPage() {
       alert("Offer cancelled successfully!");
       setShowDeleteOfferConfirm(false);
       setOfferToDelete(null);
-      await Promise.all([loadMyPendingOffers(), loadMyCards()]);
+      await Promise.all([
+        loadMyPendingOffers(),
+        loadMyCards(),
+        loadIncomingOffers(),  // ÚJ
+      ]);
     } else {
       alert(res.message || "Failed to delete offer");
     }
@@ -177,13 +211,48 @@ export default function MarketPage() {
       setShowOfferModal(false);
       setSelectedListing(null);
       setSelectedUserCardId(null);
-      await Promise.all([loadListings(), loadMyCards(), loadMyPendingOffers()]);
+      await Promise.all([
+        loadListings(),
+        loadMyCards(),
+        loadMyPendingOffers(),
+        loadIncomingOffers(),  // ÚJ
+      ]);
     } else {
       alert(res.message || "Failed to send offer");
     }
   };
 
-  // Add hozzá ezt a hiányzó függvényeket:
+  // ÚJ: Ajánlat elfogadása
+  const handleAcceptOffer = async (offer) => {
+    const res = await acceptOffer(offer.offer_id);
+    if (res.result) {
+      alert("Offer accepted successfully!");
+      await Promise.all([
+        loadListings(),
+        loadMyCards(),
+        loadMyPendingOffers(),
+        loadIncomingOffers(),
+      ]);
+    } else {
+      alert(res.message || "Failed to accept offer");
+    }
+  };
+
+  // ÚJ: Ajánlat elutasítása
+  const handleRejectOffer = async (offer) => {
+    const res = await rejectOffer(offer.offer_id);
+    if (res.result) {
+      alert("Offer rejected successfully!");
+      await Promise.all([
+        loadListings(),
+        loadMyCards(),
+        loadMyPendingOffers(),
+        loadIncomingOffers(),
+      ]);
+    } else {
+      alert(res.message || "Failed to reject offer");
+    }
+  };
 
   const handleDeleteCancel = () => {
     setShowDeleteConfirm(false);
@@ -247,6 +316,35 @@ export default function MarketPage() {
             </button>
           </div>
         </div>
+
+        {/* BEÉRKEZŐ AJÁNLATOK SZEKCIÓ - ÚJ */}
+        {incomingOffers.length > 0 && (
+          <div className="row mb-4">
+            <div className="col-12">
+              <h3
+                style={{
+                  fontSize: "1.5rem",
+                  fontWeight: "300",
+                  color: "#333",
+                  marginBottom: "15px",
+                }}
+              >
+                Incoming Offers ({incomingOffers.length})
+              </h3>
+              <div className="row">
+                {incomingOffers.map((offer) => (
+                  <div key={offer.offer_id} className="col-md-3 mb-4">
+                    <IncomingOfferCard
+                      offer={offer}
+                      onAccept={handleAcceptOffer}
+                      onReject={handleRejectOffer}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Saját függőben lévő offerek szekció */}
         {myPendingOffers.length > 0 && (
@@ -322,6 +420,7 @@ export default function MarketPage() {
         )}
       </div>
 
+      {/* Modalok - változatlanok */}
       {/* Delete Listing Modal */}
       <Modal
         isOpen={showDeleteConfirm}
