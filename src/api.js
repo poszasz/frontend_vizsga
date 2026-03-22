@@ -341,3 +341,57 @@ export async function rejectOffer(offerId) {
         return {result: false, message: "Network error: " + error.message}
     }
 }
+
+// ========== ÉRTESÍTÉSEK LEKÉRÉSE ==========
+export async function getNotifications() {
+    try {
+        const res = await fetch(`${BASE}/notifications`, {
+            method: 'GET',
+            credentials: 'include',
+            mode: 'cors',
+            headers: {'Content-Type': 'application/json'}
+        });
+        const data = await res.json();
+        if(!res.ok) return {result: false, message: data.message, notifications: []};
+        else return {result: true, notifications: data.notifications || []};
+    } catch (error) {
+        console.error("Fetch error:", error);
+        return {result: false, message: "Network error: " + error.message, notifications: []};
+    }
+}
+
+// ========== ÉRTESÍTÉS MEGJELÖLÉSE OLVASOTTKÉNT ==========
+export async function markNotificationAsRead(notificationId) {
+    try {
+        const res = await fetch(`${BASE}/notifications/${notificationId}/read`, {
+            method: 'PUT',
+            credentials: 'include',
+            mode: 'cors',
+            headers: {'Content-Type': 'application/json'}
+        });
+        const data = await res.json();
+        if(!res.ok) return {result: false, message: data.message};
+        else return {result: true, message: data.message};
+    } catch (error) {
+        console.error("Fetch error:", error);
+        return {result: false, message: "Network error: " + error.message};
+    }
+}
+
+// ========== ÖSSZES ÉRTESÍTÉS MEGJELÖLÉSE OLVASOTTKÉNT ==========
+export async function markAllNotificationsAsRead() {
+    try {
+        const res = await fetch(`${BASE}/notifications/read-all`, {
+            method: 'PUT',
+            credentials: 'include',
+            mode: 'cors',
+            headers: {'Content-Type': 'application/json'}
+        });
+        const data = await res.json();
+        if(!res.ok) return {result: false, message: data.message};
+        else return {result: true, message: data.message};
+    } catch (error) {
+        console.error("Fetch error:", error);
+        return {result: false, message: "Network error: " + error.message};
+    }
+}
