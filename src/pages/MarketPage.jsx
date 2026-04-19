@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
+import '../index.css'
 import {
   getMarketListings,
   makeOffer,
@@ -9,9 +10,9 @@ import {
   deleteListing,
   getMyPendingOffers,
   deleteOffer,
-  getIncomingOffers,   // ÚJ
-  acceptOffer,         // ÚJ
-  rejectOffer,         // ÚJ
+  getIncomingOffers,   
+  acceptOffer,         
+  rejectOffer,         
   checkAuth,
   logout,
 } from "../api";
@@ -282,12 +283,12 @@ export default function MarketPage() {
       <Navbar title="Market" user={user} onLogout={handleLogout} />
 
       <div
-        className="flex-grow-1 container-fluid p-4"
+        className="flex-grow-1 container-fluid p-4 responsive-container"
         style={{ overflowY: "auto", backgroundColor: "#f5f5f5" }}
       >
         {/* Szűrő sor */}
         <div className="row mb-4 align-items-center">
-          <div className="col-12 d-flex justify-content-between align-items-center">
+          <div className="col-12 d-flex justify-content-between align-items-center responsive-container">
             <div style={{ width: "120px" }}></div>
             <FilterButtons
               filterType={filterType}
@@ -319,7 +320,7 @@ export default function MarketPage() {
 
         {/* BEÉRKEZŐ AJÁNLATOK SZEKCIÓ - ÚJ */}
         {incomingOffers.length > 0 && (
-          <div className="row mb-4">
+          <div className="row mb-4 responsive-container">
             <div className="col-12">
               <h3
                 style={{
@@ -348,7 +349,7 @@ export default function MarketPage() {
 
         {/* Saját függőben lévő offerek szekció */}
         {myPendingOffers.length > 0 && (
-          <div className="row mb-4">
+          <div className="row mb-4 responsive-container">
             <div className="col-12">
               <h3
                 style={{
@@ -375,8 +376,8 @@ export default function MarketPage() {
         )}
 
         {/* Listings szekció */}
-        <div className="row mb-4">
-          <div className="col-12">
+        <div className="row mb-4 responsive-container">
+          <div className="col-12 responsive-container">
             <h3
               style={{ fontSize: "1.5rem", fontWeight: "300", color: "#333" }}
             >
@@ -404,7 +405,7 @@ export default function MarketPage() {
         </div>
 
         {filteredListings.length === 0 && (
-          <div className="text-center mt-5">
+          <div className="text-center mt-5 responsive-container">
             <h4 style={{ fontSize: "2rem", fontWeight: "300", color: "#333" }}>
               No listings found
             </h4>

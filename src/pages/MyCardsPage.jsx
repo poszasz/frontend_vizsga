@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar"
 import LoadingSpinner from "../components/LoadingSpinner"
 import Card from "../components/Card"
 import Modal from "../components/Modal"
+import '../index.css'
 
 export default function MyCardsPage() {
     const navigation = useNavigate()

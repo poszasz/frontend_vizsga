@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { openPack, getMyPacks, checkAuth, logout } from "../api"
 import Navbar from "../components/Navbar"
 import LoadingSpinner from "../components/LoadingSpinner"
+import '../index.css'
 
 export default function OpenpacksPage() {
     const navigation = useNavigate()

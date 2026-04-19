@@ -1,4 +1,4 @@
-const BASE = 'http://localhost:3000'
+export const BASE = 'https://nodejs312.dszcbaross.edu.hu'
 
 // ========== REGISZTRÁCIÓ ==========
 export async function registration(email, username, password) {  
@@ -103,6 +103,97 @@ export async function logout() {
         console.error("Logout error:", error)
         localStorage.removeItem('user')
         return { result: false, message: "Network error" }
+    }
+}
+
+// ========== FELHASZNÁLÓNÉV MÓDOSÍTÁSA ==========
+export async function updateUsername(newUsername) {
+    try {
+        const res = await fetch(`${BASE}/username`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'include',
+            mode: 'cors',
+            body: JSON.stringify({ newUsername })
+        });
+        const data = await res.json();
+        if (!res.ok) return { result: false, message: data.message };
+        
+        // Frissítsük a localStorage-t
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        user.username = newUsername;
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        return { result: true, message: data.message };
+    } catch (error) {
+        console.error("Fetch error:", error);
+        return { result: false, message: "Network error: " + error.message };
+    }
+}
+
+// ========== EMAIL MÓDOSÍTÁSA ==========
+export async function updateEmail(newEmail) {
+    try {
+        const res = await fetch(`${BASE}/email`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'include',
+            mode: 'cors',
+            body: JSON.stringify({ newEmail })
+        });
+        const data = await res.json();
+        if (!res.ok) return { result: false, message: data.message };
+        
+        // Frissítsük a localStorage-t
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        user.email = newEmail;
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        return { result: true, message: data.message };
+    } catch (error) {
+        console.error("Fetch error:", error);
+        return { result: false, message: "Network error: " + error.message };
+    }
+}
+
+// ========== JELSZÓ MÓDOSÍTÁSA ==========
+export async function updatePassword(nowPassword, newPassword) {
+    try {
+        const res = await fetch(`${BASE}/password`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'include',
+            mode: 'cors',
+            body: JSON.stringify({ nowPassword, newPassword })
+        });
+        const data = await res.json();
+        if (!res.ok) return { result: false, message: data.message };
+        return { result: true, message: data.message };
+    } catch (error) {
+        console.error("Fetch error:", error);
+        return { result: false, message: "Network error: " + error.message };
+    }
+}
+
+// ========== FELHASZNÁLÓ TÖRLÉSE ==========
+export async function deleteAccount() {
+    try {
+        const res = await fetch(`${BASE}/account`, {
+            method: 'DELETE',
+            credentials: 'include',
+            mode: 'cors',
+            headers: {'Content-Type': 'application/json'}
+        });
+        const data = await res.json();
+        if (!res.ok) return { result: false, message: data.message };
+        
+        // Töröljük a localStorage-t
+        localStorage.removeItem('user');
+        
+        return { result: true, message: data.message };
+    } catch (error) {
+        console.error("Fetch error:", error);
+        return { result: false, message: "Network error: " + error.message };
     }
 }
 

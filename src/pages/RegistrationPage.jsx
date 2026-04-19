@@ -5,6 +5,8 @@ import { registration } from "../api"
 import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 
+
+
 export default function RegistrationPage() {
     const navigation = useNavigate()
 
@@ -40,8 +42,9 @@ export default function RegistrationPage() {
         },
         placeholder: { color: '#aaa' }
     }
-
+    
     return (
+        
         <div className="vh-100 d-flex flex-column">
             <Navbar title="Sign Up" showBackButton={true} />
 

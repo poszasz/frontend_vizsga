@@ -1,6 +1,10 @@
 export default function Card({ card, onClick, showCount = false, count = 1 }) {
+    const carImages = import.meta.glob('../assets/*.{jpg,jpeg,png,jfif,webp}', { eager: true })
+
     const getImageUrl = (card) => {
-        return card.image_url || `https://via.placeholder.com/300x150?text=${card.manufacturer}+${card.name}`;
+        const key = `../assets/${card.image_url}`
+        return carImages[key]?.default
+            || `https://via.placeholder.com/300x150?text=${card.manufacturer}+${card.name}`;
     }
 
     const cardStyle = {
@@ -17,7 +21,7 @@ export default function Card({ card, onClick, showCount = false, count = 1 }) {
     }
 
     return (
-        <div 
+        <div
             style={cardStyle}
             onClick={onClick}
             onMouseEnter={(e) => {
@@ -31,7 +35,7 @@ export default function Card({ card, onClick, showCount = false, count = 1 }) {
                 e.currentTarget.style.borderColor = '#ddd'
             }}
         >
-            <img 
+            <img
                 src={getImageUrl(card)}
                 alt={`${card.manufacturer} ${card.name}`}
                 style={{
@@ -44,7 +48,7 @@ export default function Card({ card, onClick, showCount = false, count = 1 }) {
                     e.target.src = `https://via.placeholder.com/300x150?text=${card.manufacturer}+${card.name}`
                 }}
             />
-            
+
             <div style={{ padding: '15px', color: '#333', flex: 1 }}>
                 <div style={{
                     fontSize: '1.2rem',
@@ -70,7 +74,7 @@ export default function Card({ card, onClick, showCount = false, count = 1 }) {
                         </span>
                     )}
                 </div>
-                
+
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: '1fr 1fr',
