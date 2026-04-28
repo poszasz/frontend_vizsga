@@ -62,7 +62,9 @@ git clone https://github.com/poszasz/frontend_vizsga.git
 
 ### HomePage.jsx
 
-![image](https://snipboard.io/WF9A2y.jpg)![image](https://snipboard.io/7xMnkT.jpg)![image](https://snipboard.io/KiQGUN.jpg)
+![image](https://snipboard.io/WF9A2y.jpg)
+![image](https://snipboard.io/7xMnkT.jpg)
+![image](https://snipboard.io/KiQGUN.jpg)
 
 ### MainPage.jsx
 
