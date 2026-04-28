@@ -430,16 +430,18 @@ export async function getIncomingOffers() {
     }
 }
 
-// ========== AJÁNLAT ELUTASÍTÁSA ==========
+// ========== AJÁNLAT ELUTASÍTÁSA (JAVÍTVA) ==========
 export async function rejectOffer(offerId) {
     try {
         const res = await fetch(`${BASE}/reject-offer/${offerId}`, {
             method: 'POST',
             credentials: 'include',
             mode: 'cors',
-            headers: {'Content-Type': 'application/json'}
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ offerId: offerId }) // Adjuk át az ID-t body-ban is
         })
         const data = await res.json()
+        console.log("Reject response:", data) // Logold a választ
         if(!res.ok) return {result: false, message: data.message}
         else return {result: true, message: data.message}
     } catch (error) {
