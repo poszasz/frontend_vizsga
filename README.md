@@ -1,6 +1,6 @@
 ## Készítette
 - Tóth Ádám Kornél és Várhidi Olivér György (Frontend)
-- [GitHub repo]([https://github.com/poszasz/backend_vizsga](https://github.com/poszasz/frontend_vizsga.git))
+- [GitHub repo][https://github.com/poszasz/backend_vizsga](https://github.com/poszasz/frontend_vizsga.git)
 
 ---
 
