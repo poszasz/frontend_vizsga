@@ -16,12 +16,10 @@ body {
 
 .bg-secondary {
   background-color: #ada6a6 !important;
-
 }
 
 .navbar {
   padding: 0.5rem 1rem;
-
 }
 
 .navbar-text {
@@ -88,8 +86,504 @@ body {
   color: #ccc !important;
 }
 
+/* ========== RESZPONZÍV BEÁLLÍTÁSOK ========== */
+
+/* Alap responsive container - desktopra optimalizálva */
 .responsive-container {
   width: 100%;
-  max-width: 800px;
-  padding: 0 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Desktop nézet (1024px és felette) */
+@media (min-width: 1024px) {
+  .responsive-container {
+    max-width: 1200px;
+    padding: 0 40px;
+  }
+  
+  /* Desktopon a gombok egymás mellett */
+  .main-menu-buttons {
+    display: flex;
+    flex-direction: row !important;
+    justify-content: center;
+    gap: 40px;
+  }
+  
+  /* MarketPage szűrő sor desktopon */
+  .market-filter-row {
+    display: flex;
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+/* Táblagép nézet (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .responsive-container {
+    max-width: 900px;
+    padding: 0 20px;
+  }
+  
+  /* Kártyák 2-3 oszlopban */
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .col-md-3 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+/* Mobil nézet (768px alatt) */
+@media (max-width: 767px) {
+  .responsive-container {
+    max-width: 100%;
+    padding: 0 15px;
+  }
+  
+  /* Main menu gombok mobilban - egymás alá */
+  .main-menu-buttons {
+    display: flex;
+    flex-direction: column !important;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .main-menu-buttons > div {
+    width: 100%;
+    max-width: 280px;
+  }
+  
+  /* MarketPage szűrő sor mobilban */
+  .market-filter-row {
+    display: flex;
+    flex-direction: column !important;
+    gap: 15px;
+  }
+  
+  .market-filter-row > div {
+    width: 100%;
+    text-align: center;
+  }
+  
+  /* Filter gombok mobilban - egymás alá */
+  .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .filter-buttons button {
+    padding: 6px 12px !important;
+    font-size: 0.8rem !important;
+  }
+  
+  /* POST OFFER gomb mobilban */
+  .post-offer-btn {
+    width: 100% !important;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+  
+  /* Kártyák egymás alá */
+  .cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 15px !important;
+  }
+  
+  /* Kártya belső padding csökkentése */
+  .card-content {
+    padding: 12px !important;
+  }
+  
+  /* Kártya cím mérete */
+  .card-title {
+    font-size: 1rem !important;
+  }
+  
+  /* Navbar mobil optimalizáció */
+  .navbar {
+    padding: 0.5rem;
+  }
+  
+  .navbar img {
+    height: 40px !important;
+  }
+  
+  /* Modal mobilban */
+  .modal-content {
+    width: 95% !important;
+    margin: 10px !important;
+    padding: 20px !important;
+  }
+  
+  /* Gombok teljes szélességűvé tétele mobilban */
+  .btn-full-mobile {
+    width: 100% !important;
+  }
+  
+  /* Betűméretek csökkentése mobilban */
+  body {
+    font-size: 14px;
+  }
+  
+  h1, h2, h3 {
+    font-size: 1.3rem !important;
+  }
+  
+  h4, h5 {
+    font-size: 1rem !important;
+  }
+  
+  /* Padding-ek csökkentése */
+  .p-4 {
+    padding: 1rem !important;
+  }
+  
+  .container-fluid {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  .col-md-3, .col-md-4, .col-md-6 {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+}
+
+/* Kis mobil nézet (480px alatt) */
+@media (max-width: 480px) {
+  .responsive-container {
+    padding: 0 10px;
+  }
+  
+  /* Még kisebb betűméretek */
+  body {
+    font-size: 12px;
+  }
+  
+  .main-menu-buttons > div {
+    max-width: 250px;
+  }
+  
+  .main-menu-button-text {
+    font-size: 1rem !important;
+    padding: 12px 0 !important;
+  }
+  
+  /* Filter gombok még kisebbek */
+  .filter-buttons button {
+    padding: 4px 10px !important;
+    font-size: 0.7rem !important;
+  }
+  
+  /* Gombok padding csökkentése */
+  button, .btn {
+    padding: 8px 16px !important;
+  }
+}
+
+/* Reszponzív képek */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Overlay animáció */
+.menu-overlay {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Kártya rács reszponzív beállításai */
+.cards-grid {
+  display: grid;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Desktop: 4-5 oszlop */
+@media (min-width: 1200px) {
+  .cards-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Táblagép: 3 oszlop */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Mobil: 1 oszlop */
+@media (max-width: 767px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 15px;
+  }
+}
+
+/* Main menu gombok konténer */
+.main-menu-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+/* Desktopon maradjon a megszokott elrendezés */
+@media (min-width: 768px) {
+  .main-menu-buttons {
+    flex-direction: row !important;
+  }
+}
+
+/* ========== NOTIFICATION BELL RESZPONZÍV STÍLUSOK ========== */
+
+/* Notification Bell Container */
+.notification-bell-container {
+  position: relative;
+}
+
+/* Bell gomb stílusok */
+.notification-bell-btn {
+  background: none;
+  border: none;
+  color: #000000;
+  font-size: clamp(1.4rem, 5vw, 1.8rem);
+  cursor: pointer;
+  width: clamp(40px, 10vw, 50px);
+  height: clamp(40px, 10vw, 50px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.notification-bell-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Badge stílusok */
+.notification-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  width: clamp(16px, 5vw, 20px);
+  height: clamp(16px, 5vw, 20px);
+  font-size: clamp(10px, 3vw, 12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* Dropdown overlay (mobil) */
+.notification-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Notification dropdown */
+.notification-dropdown {
+  position: absolute;
+  top: clamp(50px, 12vw, 60px);
+  right: 0;
+  width: clamp(300px, 90vw, 380px);
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  max-height: min(500px, 80vh);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Dropdown header */
+.notification-header {
+  padding: clamp(12px, 3vw, 15px);
+  border-bottom: 1px solid #ddd;
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.notification-title {
+  margin: 0;
+  color: #333;
+  font-size: clamp(1rem, 4vw, 1.1rem);
+}
+
+.notification-mark-all-btn {
+  background: none;
+  border: none;
+  color: #3498db;
+  cursor: pointer;
+  font-size: clamp(0.7rem, 3vw, 0.8rem);
+  padding: 5px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.notification-mark-all-btn:hover {
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+/* Notification lista */
+.notification-list {
+  max-height: min(400px, 70vh);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Notification item */
+.notification-item {
+  padding: clamp(10px, 3vw, 12px) clamp(12px, 3vw, 15px);
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.notification-item-unread {
+  background-color: #f0f7ff;
+}
+
+.notification-item-read {
+  background-color: #ffffff;
+}
+
+.notification-item:active {
+  background-color: #e8e8e8;
+}
+
+/* Notification content */
+.notification-content {
+  display: flex;
+  gap: clamp(8px, 2.5vw, 10px);
+  align-items: flex-start;
+}
+
+.notification-icon {
+  font-size: clamp(1rem, 4vw, 1.2rem);
+  flex-shrink: 0;
+}
+
+.notification-text-container {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-item-title {
+  color: #333;
+  font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+  font-weight: bold;
+  word-break: break-word;
+}
+
+.notification-message {
+  color: #666;
+  font-size: clamp(0.75rem, 3vw, 0.85rem);
+  margin-top: 4px;
+  word-break: break-word;
+}
+
+.notification-timestamp {
+  color: #999;
+  font-size: clamp(0.65rem, 2.5vw, 0.7rem);
+  margin-top: 4px;
+}
+
+/* Loading és empty állapot */
+.notification-loading,
+.notification-empty {
+  padding: clamp(30px, 10vw, 40px);
+  text-align: center;
+  color: #666;
+  font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+}
+
+/* Reszponzív beállítások mobilra */
+@media (max-width: 767px) {
+  .notification-dropdown {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90vw !important;
+    max-width: 90vw !important;
+    max-height: 80vh !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification-dropdown {
+    width: 95vw !important;
+    max-width: 95vw !important;
+  }
+}
+
+/* Touch eszközök */
+@media (hover: none) {
+  .notification-item:active {
+    background-color: #e8e8e8 !important;
+  }
+}
+
+/* Scrollbar styling */
+.notification-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notification-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.notification-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

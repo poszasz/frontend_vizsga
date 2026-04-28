@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom"
 import kep from '../assets/carcardsLogo.png'
 import '../index.css'
+import { useEffect } from "react"
+import { checkAuth } from "../api"
 
 export default function HomePage() {
     const navigation = useNavigate()
@@ -16,6 +18,21 @@ export default function HomePage() {
         color: 'white',
         cursor: 'pointer'
     }
+
+    useEffect(() => {
+        const verifyAuth = async () => {
+          try {
+            const { authenticated, user } = await checkAuth();
+            if (authenticated) {
+              navigation("/main");
+              return;
+            }
+          } catch (error) {
+            console.error("Auth error:", error);
+          }
+        };
+        verifyAuth();
+      }, []);
 
     return (
         <div className="d-flex vh-100 flex-column justify-content-center align-content-around">

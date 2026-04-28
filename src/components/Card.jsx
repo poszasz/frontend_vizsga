@@ -40,7 +40,7 @@ export default function Card({ card, onClick, showCount = false, count = 1 }) {
                 alt={`${card.manufacturer} ${card.name}`}
                 style={{
                     width: '100%',
-                    height: '150px',
+                    height: '200px',
                     objectFit: 'cover',
                     borderBottom: '1px solid #eee'
                 }}
@@ -51,13 +51,15 @@ export default function Card({ card, onClick, showCount = false, count = 1 }) {
 
             <div style={{ padding: '15px', color: '#333', flex: 1 }}>
                 <div style={{
-                    fontSize: '1.2rem',
+                    fontSize: 'clamp(1rem, 4vw, 1.2rem)',
                     fontWeight: 'bold',
                     marginBottom: '5px',
                     color: '#333',
                     display: 'flex',
                     justifyContent: 'space-between',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '5px'
                 }}>
                     {card.manufacturer} {card.name}
                     {showCount && count > 1 && (
@@ -66,9 +68,8 @@ export default function Card({ card, onClick, showCount = false, count = 1 }) {
                             color: 'white',
                             borderRadius: '20px',
                             padding: '3px 10px',
-                            fontSize: '0.9rem',
-                            fontWeight: 'bold',
-                            marginLeft: '8px'
+                            fontSize: '0.8rem',
+                            fontWeight: 'bold'
                         }}>
                             x{count}
                         </span>
@@ -79,23 +80,23 @@ export default function Card({ card, onClick, showCount = false, count = 1 }) {
                     display: 'grid',
                     gridTemplateColumns: '1fr 1fr',
                     gap: '8px',
-                    fontSize: '0.9rem',
+                    fontSize: 'clamp(0.75rem, 3vw, 0.9rem)',
                     marginTop: '10px'
                 }}>
                     <div>
-                        <span style={{ color: '#666', fontSize: '0.8rem', display: 'block' }}>HP</span>
+                        <span style={{ color: '#666', fontSize: '0.7rem', display: 'block' }}>HP</span>
                         <span style={{ color: '#333', fontWeight: '500' }}>{card.horsepower || 'N/A'} hp</span>
                     </div>
                     <div>
-                        <span style={{ color: '#666', fontSize: '0.8rem', display: 'block' }}>0-100</span>
+                        <span style={{ color: '#666', fontSize: '0.7rem', display: 'block' }}>0-100</span>
                         <span style={{ color: '#333', fontWeight: '500' }}>{card.acceleration || 'N/A'}s</span>
                     </div>
                     <div>
-                        <span style={{ color: '#666', fontSize: '0.8rem', display: 'block' }}>Fuel</span>
+                        <span style={{ color: '#666', fontSize: '0.7rem', display: 'block' }}>Fuel</span>
                         <span style={{ color: '#333', fontWeight: '500' }}>{card.fuel || 'N/A'}</span>
                     </div>
                     <div>
-                        <span style={{ color: '#666', fontSize: '0.8rem', display: 'block' }}>Gearbox</span>
+                        <span style={{ color: '#666', fontSize: '0.7rem', display: 'block' }}>Gearbox</span>
                         <span style={{ color: '#333', fontWeight: '500' }}>{card.gearbox || 'N/A'}</span>
                     </div>
                 </div>

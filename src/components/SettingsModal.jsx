@@ -46,8 +46,9 @@ export default function SettingsModal({ isOpen, onClose, user, onUpdate, onDelet
             }
         } catch (err) {
             setError("Something went wrong");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const handleUpdateEmail = async () => {
@@ -70,8 +71,9 @@ export default function SettingsModal({ isOpen, onClose, user, onUpdate, onDelet
             }
         } catch (err) {
             setError("Something went wrong");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const handleUpdatePassword = async () => {
@@ -83,7 +85,6 @@ export default function SettingsModal({ isOpen, onClose, user, onUpdate, onDelet
             setError("New passwords do not match");
             return;
         }
-        
         
         setLoading(true);
         setError("");
@@ -106,19 +107,27 @@ export default function SettingsModal({ isOpen, onClose, user, onUpdate, onDelet
             }
         } catch (err) {
             setError("Something went wrong");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const handleDeleteAccount = async () => {
         if (window.confirm("Are you sure you want to delete your account? This action cannot be undone! All your cards, listings, offers and packs will be permanently deleted.")) {
             setLoading(true);
-            const res = await onDelete();
-            if (res.result) {
-                alert("Account deleted successfully");
-                onClose();
-            } else {
-                setError(res.message || "Failed to delete account");
+            setError("");
+            
+            try {
+                const res = await onDelete();
+                if (res.result) {
+                    alert("Account deleted successfully");
+                    onClose();
+                } else {
+                    setError(res.message || "Failed to delete account");
+                }
+            } catch (err) {
+                setError("Something went wrong");
+            } finally {
                 setLoading(false);
             }
         }

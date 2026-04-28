@@ -175,20 +175,35 @@ export async function updatePassword(nowPassword, newPassword) {
     }
 }
 
+
 // ========== FELHASZNÁLÓ TÖRLÉSE ==========
 export async function deleteAccount() {
     try {
+        const token = localStorage.getItem('token'); // Vedd ki a token-t
+        console.log("Token exists:", !!token); // Debug
+        
         const res = await fetch(`${BASE}/account`, {
             method: 'DELETE',
             credentials: 'include',
             mode: 'cors',
-            headers: {'Content-Type': 'application/json'}
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // ADD EZT!
+            }
         });
+        
+        console.log("Response status:", res.status); // Debug
+        
         const data = await res.json();
-        if (!res.ok) return { result: false, message: data.message };
+        console.log("Response data:", data); // Debug
+        
+        if (!res.ok) {
+            return { result: false, message: data.message || "Delete failed" };
+        }
         
         // Töröljük a localStorage-t
         localStorage.removeItem('user');
+        localStorage.removeItem('token'); // Token-t is töröld
         
         return { result: true, message: data.message };
     } catch (error) {

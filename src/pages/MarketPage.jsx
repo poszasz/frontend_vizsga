@@ -10,9 +10,9 @@ import {
   deleteListing,
   getMyPendingOffers,
   deleteOffer,
-  getIncomingOffers,   
-  acceptOffer,         
-  rejectOffer,         
+  getIncomingOffers,
+  acceptOffer,
+  rejectOffer,
   checkAuth,
   logout,
 } from "../api";
@@ -21,7 +21,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import FilterButtons from "../components/FilterButtons";
 import ListingCard from "../components/ListingCard";
 import OfferCard from "../components/OfferCard";
-import IncomingOfferCard from "../components/IncomingOfferCard";  // ÚJ komponens
+import IncomingOfferCard from "../components/IncomingOfferCard";
 import Modal from "../components/Modal";
 import Card from "../components/Card";
 
@@ -31,7 +31,7 @@ export default function MarketPage() {
   const [filteredListings, setFilteredListings] = useState([]);
   const [myCards, setMyCards] = useState([]);
   const [myPendingOffers, setMyPendingOffers] = useState([]);
-  const [incomingOffers, setIncomingOffers] = useState([]);  // ÚJ
+  const [incomingOffers, setIncomingOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [selectedListing, setSelectedListing] = useState(null);
@@ -43,25 +43,28 @@ export default function MarketPage() {
   const [listingToDelete, setListingToDelete] = useState(null);
   const [showDeleteOfferConfirm, setShowDeleteOfferConfirm] = useState(false);
   const [offerToDelete, setOfferToDelete] = useState(null);
-
-  // Szűrő állapot
   const [filterType, setFilterType] = useState("all");
 
   useEffect(() => {
     const verifyAuth = async () => {
-      const { authenticated, user } = await checkAuth();
-      if (!authenticated) {
+      try {
+        const { authenticated, user } = await checkAuth();
+        if (!authenticated) {
+          navigation("/login");
+          return;
+        }
+        setUser(user);
+        await Promise.all([
+          loadListings(),
+          loadMyCards(),
+          loadMyPendingOffers(),
+          loadIncomingOffers(),
+        ]);
+        setLoading(false);
+      } catch (error) {
+        console.error("Auth error:", error);
         navigation("/login");
-        return;
       }
-      setUser(user);
-      await Promise.all([
-        loadListings(),
-        loadMyCards(),
-        loadMyPendingOffers(),
-        loadIncomingOffers(),  // ÚJ
-      ]);
-      setLoading(false);
     };
     verifyAuth();
   }, [navigation]);
@@ -71,23 +74,32 @@ export default function MarketPage() {
   }, [listings, filterType, user]);
 
   const loadMyPendingOffers = async () => {
-    const res = await getMyPendingOffers();
-    if (res.result) setMyPendingOffers(res.offers);
+    try {
+      const res = await getMyPendingOffers();
+      if (res.result) setMyPendingOffers(res.offers || []);
+    } catch (error) {
+      console.error("Error loading pending offers:", error);
+      setMyPendingOffers([]);
+    }
   };
 
   const loadIncomingOffers = async () => {
-  console.log("Betöltöm a beérkező ajánlatokat...");
-  const res = await getIncomingOffers();
-  console.log("Beérkező ajánlatok válasza:", res);
-  if (res.result) {
-    console.log("Offerek száma:", res.offers.length);
-    setIncomingOffers(res.offers);
-  }
-};
+    try {
+      console.log("Betöltöm a beérkező ajánlatokat...");
+      const res = await getIncomingOffers();
+      console.log("Beérkező ajánlatok válasza:", res);
+      if (res.result) {
+        console.log("Offerek száma:", res.offers?.length || 0);
+        setIncomingOffers(res.offers || []);
+      }
+    } catch (error) {
+      console.error("Error loading incoming offers:", error);
+      setIncomingOffers([]);
+    }
+  };
 
   const applyFilter = () => {
     if (!user) return;
-
     let filtered = [...listings];
     switch (filterType) {
       case "mine":
@@ -103,20 +115,30 @@ export default function MarketPage() {
   };
 
   const loadListings = async () => {
-    const res = await getMarketListings();
-    if (res.result) setListings(res.listings);
+    try {
+      const res = await getMarketListings();
+      if (res.result) setListings(res.listings || []);
+    } catch (error) {
+      console.error("Error loading listings:", error);
+      setListings([]);
+    }
   };
 
   const loadMyCards = async () => {
-    const res = await getMyCards();
-    if (res.result) {
-      const availableCards = res.cards
-        .filter((card) => !card.is_listed && !card.is_offered)
-        .map((card) => ({
-          ...card,
-          user_card_id: card.user_card_id,
-        }));
-      setMyCards(availableCards);
+    try {
+      const res = await getMyCards();
+      if (res.result) {
+        const availableCards = (res.cards || [])
+          .filter((card) => !card.is_listed && !card.is_offered)
+          .map((card) => ({
+            ...card,
+            user_card_id: card.user_card_id,
+          }));
+        setMyCards(availableCards);
+      }
+    } catch (error) {
+      console.error("Error loading my cards:", error);
+      setMyCards([]);
     }
   };
 
@@ -136,20 +158,24 @@ export default function MarketPage() {
       alert("Please select a card to list");
       return;
     }
-
-    const res = await createListing(selectedCardForListing.user_card_id);
-    if (res.result) {
-      alert("Listing created successfully!");
-      setShowPostOfferModal(false);
-      setSelectedCardForListing(null);
-      await Promise.all([
-        loadListings(),
-        loadMyCards(),
-        loadMyPendingOffers(),
-        loadIncomingOffers(),  // ÚJ
-      ]);
-    } else {
-      alert(res.message || "Failed to create listing");
+    try {
+      const res = await createListing(selectedCardForListing.user_card_id);
+      if (res.result) {
+        alert("Listing created successfully!");
+        setShowPostOfferModal(false);
+        setSelectedCardForListing(null);
+        await Promise.all([
+          loadListings(),
+          loadMyCards(),
+          loadMyPendingOffers(),
+          loadIncomingOffers(),
+        ]);
+      } else {
+        alert(res.message || "Failed to create listing");
+      }
+    } catch (error) {
+      console.error("Error creating listing:", error);
+      alert("Something went wrong");
     }
   };
 
@@ -160,21 +186,30 @@ export default function MarketPage() {
 
   const handleDeleteConfirm = async () => {
     if (!listingToDelete) return;
-
-    const res = await deleteListing(listingToDelete.listing_id);
-    if (res.result) {
-      alert("Listing deleted successfully!");
-      setShowDeleteConfirm(false);
-      setListingToDelete(null);
-      await Promise.all([
-        loadListings(),
-        loadMyCards(),
-        loadMyPendingOffers(),
-        loadIncomingOffers(),  // ÚJ
-      ]);
-    } else {
-      alert(res.message || "Failed to delete listing");
+    try {
+      const res = await deleteListing(listingToDelete.listing_id);
+      if (res.result) {
+        alert("Listing deleted successfully!");
+        setShowDeleteConfirm(false);
+        setListingToDelete(null);
+        await Promise.all([
+          loadListings(),
+          loadMyCards(),
+          loadMyPendingOffers(),
+          loadIncomingOffers(),
+        ]);
+      } else {
+        alert(res.message || "Failed to delete listing");
+      }
+    } catch (error) {
+      console.error("Error deleting listing:", error);
+      alert("Something went wrong");
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteConfirm(false);
+    setListingToDelete(null);
   };
 
   const handleDeleteOfferClick = (offer) => {
@@ -184,20 +219,29 @@ export default function MarketPage() {
 
   const handleDeleteOfferConfirm = async () => {
     if (!offerToDelete) return;
-
-    const res = await deleteOffer(offerToDelete.offer_id);
-    if (res.result) {
-      alert("Offer cancelled successfully!");
-      setShowDeleteOfferConfirm(false);
-      setOfferToDelete(null);
-      await Promise.all([
-        loadMyPendingOffers(),
-        loadMyCards(),
-        loadIncomingOffers(),  // ÚJ
-      ]);
-    } else {
-      alert(res.message || "Failed to delete offer");
+    try {
+      const res = await deleteOffer(offerToDelete.offer_id);
+      if (res.result) {
+        alert("Offer cancelled successfully!");
+        setShowDeleteOfferConfirm(false);
+        setOfferToDelete(null);
+        await Promise.all([
+          loadMyPendingOffers(),
+          loadMyCards(),
+          loadIncomingOffers(),
+        ]);
+      } else {
+        alert(res.message || "Failed to delete offer");
+      }
+    } catch (error) {
+      console.error("Error deleting offer:", error);
+      alert("Something went wrong");
     }
+  };
+
+  const handleDeleteOfferCancel = () => {
+    setShowDeleteOfferConfirm(false);
+    setOfferToDelete(null);
   };
 
   const handleOfferSubmit = async () => {
@@ -205,64 +249,66 @@ export default function MarketPage() {
       alert("Please select a card to offer");
       return;
     }
-
-    const res = await makeOffer(selectedListing.listing_id, selectedUserCardId);
-    if (res.result) {
-      alert("Offer sent successfully!");
-      setShowOfferModal(false);
-      setSelectedListing(null);
-      setSelectedUserCardId(null);
-      await Promise.all([
-        loadListings(),
-        loadMyCards(),
-        loadMyPendingOffers(),
-        loadIncomingOffers(),  // ÚJ
-      ]);
-    } else {
-      alert(res.message || "Failed to send offer");
+    try {
+      const res = await makeOffer(selectedListing.listing_id, selectedUserCardId);
+      if (res.result) {
+        alert("Offer sent successfully!");
+        setShowOfferModal(false);
+        setSelectedListing(null);
+        setSelectedUserCardId(null);
+        await Promise.all([
+          loadListings(),
+          loadMyCards(),
+          loadMyPendingOffers(),
+          loadIncomingOffers(),
+        ]);
+      } else {
+        alert(res.message || "Failed to send offer");
+      }
+    } catch (error) {
+      console.error("Error sending offer:", error);
+      alert("Something went wrong");
     }
   };
 
-  // ÚJ: Ajánlat elfogadása
   const handleAcceptOffer = async (offer) => {
-    const res = await acceptOffer(offer.offer_id);
-    if (res.result) {
-      alert("Offer accepted successfully!");
-      await Promise.all([
-        loadListings(),
-        loadMyCards(),
-        loadMyPendingOffers(),
-        loadIncomingOffers(),
-      ]);
-    } else {
-      alert(res.message || "Failed to accept offer");
+    try {
+      const res = await acceptOffer(offer.offer_id);
+      if (res.result) {
+        alert("Offer accepted successfully!");
+        await Promise.all([
+          loadListings(),
+          loadMyCards(),
+          loadMyPendingOffers(),
+          loadIncomingOffers(),
+        ]);
+      } else {
+        alert(res.message || "Failed to accept offer");
+      }
+    } catch (error) {
+      console.error("Error accepting offer:", error);
+      alert("Something went wrong");
     }
   };
 
-  // ÚJ: Ajánlat elutasítása
   const handleRejectOffer = async (offer) => {
-    const res = await rejectOffer(offer.offer_id);
-    if (res.result) {
-      alert("Offer rejected successfully!");
-      await Promise.all([
-        loadListings(),
-        loadMyCards(),
-        loadMyPendingOffers(),
-        loadIncomingOffers(),
-      ]);
-    } else {
-      alert(res.message || "Failed to reject offer");
+    try {
+      const res = await rejectOffer(offer.offer_id);
+      if (res.result) {
+        alert("Offer rejected successfully!");
+        await Promise.all([
+          loadListings(),
+          loadMyCards(),
+          loadMyPendingOffers(),
+          loadIncomingOffers(),
+        ]);
+      } else {
+        alert(res.message || "Failed to reject offer");
+      }
+    } catch (error) {
+      console.error("Error rejecting offer:", error);
+      alert("Something went wrong");
     }
-  };
-
-  const handleDeleteCancel = () => {
-    setShowDeleteConfirm(false);
-    setListingToDelete(null);
-  };
-
-  const handleDeleteOfferCancel = () => {
-    setShowDeleteOfferConfirm(false);
-    setOfferToDelete(null);
   };
 
   const handleLogout = async () => {
@@ -283,13 +329,13 @@ export default function MarketPage() {
       <Navbar title="Market" user={user} onLogout={handleLogout} />
 
       <div
-        className="flex-grow-1 container-fluid p-4 responsive-container"
+        className="flex-grow-1 container-fluid p-4"
         style={{ overflowY: "auto", backgroundColor: "#f5f5f5" }}
       >
         {/* Szűrő sor */}
         <div className="row mb-4 align-items-center">
-          <div className="col-12 d-flex justify-content-between align-items-center responsive-container">
-            <div style={{ width: "120px" }}></div>
+          <div className="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div style={{ width: "120px" }} className="d-none d-md-block"></div>
             <FilterButtons
               filterType={filterType}
               setFilterType={setFilterType}
@@ -306,8 +352,7 @@ export default function MarketPage() {
                 fontWeight: "500",
                 cursor: "pointer",
                 transition: "all 0.3s ease",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                width: "120px",
+                minWidth: "120px"
               }}
               onMouseEnter={(e) => (e.target.style.backgroundColor = "#333333")}
               onMouseLeave={(e) => (e.target.style.backgroundColor = "#000000")}
@@ -318,9 +363,9 @@ export default function MarketPage() {
           </div>
         </div>
 
-        {/* BEÉRKEZŐ AJÁNLATOK SZEKCIÓ - ÚJ */}
+        {/* BEÉRKEZŐ AJÁNLATOK SZEKCIÓ */}
         {incomingOffers.length > 0 && (
-          <div className="row mb-4 responsive-container">
+          <div className="row mb-4">
             <div className="col-12">
               <h3
                 style={{
@@ -334,7 +379,7 @@ export default function MarketPage() {
               </h3>
               <div className="row">
                 {incomingOffers.map((offer) => (
-                  <div key={offer.offer_id} className="col-md-3 mb-4">
+                  <div key={offer.offer_id} className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
                     <IncomingOfferCard
                       offer={offer}
                       onAccept={handleAcceptOffer}
@@ -349,7 +394,7 @@ export default function MarketPage() {
 
         {/* Saját függőben lévő offerek szekció */}
         {myPendingOffers.length > 0 && (
-          <div className="row mb-4 responsive-container">
+          <div className="row mb-4">
             <div className="col-12">
               <h3
                 style={{
@@ -363,7 +408,7 @@ export default function MarketPage() {
               </h3>
               <div className="row">
                 {myPendingOffers.map((offer) => (
-                  <div key={offer.offer_id} className="col-md-3 mb-4">
+                  <div key={offer.offer_id} className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
                     <OfferCard
                       offer={offer}
                       onDelete={handleDeleteOfferClick}
@@ -376,8 +421,8 @@ export default function MarketPage() {
         )}
 
         {/* Listings szekció */}
-        <div className="row mb-4 responsive-container">
-          <div className="col-12 responsive-container">
+        <div className="row mb-4">
+          <div className="col-12">
             <h3
               style={{ fontSize: "1.5rem", fontWeight: "300", color: "#333" }}
             >
@@ -393,7 +438,7 @@ export default function MarketPage() {
 
         <div className="row">
           {filteredListings.map((listing) => (
-            <div key={listing.listing_id} className="col-md-3 mb-4">
+            <div key={listing.listing_id} className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
               <ListingCard
                 listing={listing}
                 user={user}
@@ -405,7 +450,7 @@ export default function MarketPage() {
         </div>
 
         {filteredListings.length === 0 && (
-          <div className="text-center mt-5 responsive-container">
+          <div className="text-center mt-5">
             <h4 style={{ fontSize: "2rem", fontWeight: "300", color: "#333" }}>
               No listings found
             </h4>
@@ -421,7 +466,6 @@ export default function MarketPage() {
         )}
       </div>
 
-      {/* Modalok - változatlanok */}
       {/* Delete Listing Modal */}
       <Modal
         isOpen={showDeleteConfirm}
@@ -581,16 +625,6 @@ export default function MarketPage() {
                       : "#ffffff",
                 }}
                 onClick={() => setSelectedUserCardId(card.user_card_id)}
-                onMouseEnter={(e) => {
-                  if (selectedUserCardId !== card.user_card_id) {
-                    e.currentTarget.style.backgroundColor = "#f5f5f5";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (selectedUserCardId !== card.user_card_id) {
-                    e.currentTarget.style.backgroundColor = "#ffffff";
-                  }
-                }}
               >
                 <div
                   style={{ display: "flex", alignItems: "center", gap: "10px" }}
@@ -646,10 +680,6 @@ export default function MarketPage() {
               cursor: "pointer",
               fontSize: "0.9rem",
             }}
-            onMouseEnter={(e) => (e.target.style.backgroundColor = "#f5f5f5")}
-            onMouseLeave={(e) =>
-              (e.target.style.backgroundColor = "transparent")
-            }
             onClick={() => {
               setShowOfferModal(false);
               setSelectedListing(null);
@@ -668,14 +698,6 @@ export default function MarketPage() {
               cursor: selectedUserCardId ? "pointer" : "not-allowed",
               fontSize: "0.9rem",
               fontWeight: "500",
-            }}
-            onMouseEnter={(e) => {
-              if (selectedUserCardId)
-                e.target.style.backgroundColor = "#333333";
-            }}
-            onMouseLeave={(e) => {
-              if (selectedUserCardId)
-                e.target.style.backgroundColor = "#000000";
             }}
             onClick={handleOfferSubmit}
             disabled={!selectedUserCardId}
@@ -703,7 +725,7 @@ export default function MarketPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
             gap: "20px",
             marginBottom: "25px",
             maxHeight: "500px",
@@ -755,10 +777,6 @@ export default function MarketPage() {
               cursor: "pointer",
               fontSize: "1rem",
             }}
-            onMouseEnter={(e) => (e.target.style.backgroundColor = "#f5f5f5")}
-            onMouseLeave={(e) =>
-              (e.target.style.backgroundColor = "transparent")
-            }
             onClick={() => {
               setShowPostOfferModal(false);
               setSelectedCardForListing(null);
@@ -776,14 +794,6 @@ export default function MarketPage() {
               cursor: selectedCardForListing ? "pointer" : "not-allowed",
               fontSize: "1rem",
               fontWeight: "500",
-            }}
-            onMouseEnter={(e) => {
-              if (selectedCardForListing)
-                e.target.style.backgroundColor = "#333333";
-            }}
-            onMouseLeave={(e) => {
-              if (selectedCardForListing)
-                e.target.style.backgroundColor = "#000000";
             }}
             onClick={handleCreateListing}
             disabled={!selectedCardForListing}

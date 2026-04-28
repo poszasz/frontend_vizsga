@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import TextBox from "../components/TextBox"
-import { login } from "../api"
+import { checkAuth, login } from "../api"
 import { useNavigate } from "react-router-dom"
 import '../styles/common.css'
 import Navbar from "../components/Navbar"
@@ -28,9 +28,24 @@ export default function LoginPage() {
         placeholder: { color: '#aaa' }
     }
 
+    useEffect(() => {
+        const verifyAuth = async () => {
+          try {
+            const { authenticated, user } = await checkAuth();
+            if (authenticated) {
+              navigation("/main");
+              return;
+            }
+          } catch (error) {
+            console.error("Auth error:", error);
+          }
+        };
+        verifyAuth();
+      }, []);
+
     return (
         <div className="vh-100 d-flex flex-column">
-            <Navbar title="Login" showBackButton={true} />
+            <Navbar title="Login" showBackButton={true} showHamburgerMenu={false}/>
 
             <div className="flex-grow-1 d-flex justify-content-center align-items-center p-4">
 

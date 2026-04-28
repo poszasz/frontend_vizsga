@@ -66,13 +66,12 @@ export default function MyCardsPage() {
         navigation('/')
     }
 
-    const getImageUrl = (card) => {
-        return card.image_url || `https://via.placeholder.com/400x300?text=${card.manufacturer}+${card.name}`;
-    }
+    
 
+    // Reszponzív kártyarács
     const cardContainerStyle = {
         display: 'grid',
-        gridTemplateColumns: 'repeat(5, 1fr)',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
         gap: '20px',
         padding: '20px'
     }
@@ -106,9 +105,9 @@ export default function MyCardsPage() {
 
             <div className="flex-grow-1" style={{ overflowY: 'auto', backgroundColor: '#f5f5f5' }}>
                 <div className="p-4">
-                    <h3 style={{ fontSize: '1.5rem', fontWeight: '300', color: '#333', marginBottom: '20px' }}>
+                    <h3 style={{ fontSize: 'clamp(1.2rem, 5vw, 1.5rem)', fontWeight: '300', color: '#333', marginBottom: '20px' }}>
                         You have {totalCards} car{totalCards !== 1 ? 's' : ''} in your collection
-                        <span style={{ fontSize: '1rem', color: '#666', marginLeft: '10px' }}>
+                        <span style={{ fontSize: 'clamp(0.8rem, 3vw, 1rem)', color: '#666', marginLeft: '10px' }}>
                             ({groupedCards.length} different models)
                         </span>
                     </h3>
@@ -130,7 +129,7 @@ export default function MyCardsPage() {
                     
                     {groupedCards.length === 0 && (
                         <div className="text-center mt-5">
-                            <h4 style={{ fontSize: '2rem', fontWeight: '300', color: '#333' }}>No cards in your collection yet</h4>
+                            <h4 style={{ fontSize: 'clamp(1.5rem, 6vw, 2rem)', fontWeight: '300', color: '#333' }}>No cards in your collection yet</h4>
                             <p style={{ color: '#666' }}>Open packs or trade with other players to get cards!</p>
                         </div>
                     )}
@@ -147,26 +146,14 @@ export default function MyCardsPage() {
             >
                 {selectedCard && (
                     <>
-                        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                            <img 
-                                src={getImageUrl(selectedCard)}
-                                alt={`${selectedCard.manufacturer} ${selectedCard.name}`}
-                                style={{
-                                    maxWidth: '100%',
-                                    maxHeight: '300px',
-                                    borderRadius: '15px',
-                                    boxShadow: '0 5px 15px rgba(0,0,0,0.1)'
-                                }}
-                            />
-                        </div>
 
                         {selectedCard.count > 1 && (
-                            <h3 style={{ textAlign: 'center', color: '#666', marginBottom: '20px' }}>
+                            <h3 style={{ textAlign: 'center', color: '#666', marginBottom: '20px', fontSize: 'clamp(1rem, 4vw, 1.3rem)' }}>
                                 (x{selectedCard.count})
                             </h3>
                         )}
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
                             <div>
                                 <div style={detailItemStyle}>
                                     <span style={detailLabelStyle}>Manufacturer:</span>

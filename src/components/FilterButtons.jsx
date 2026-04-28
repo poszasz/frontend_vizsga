@@ -18,7 +18,9 @@ export default function FilterButtons({ filterType, setFilterType, counts }) {
             padding: '8px',
             borderRadius: '50px',
             boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-            border: '1px solid #ddd'
+            border: '1px solid #ddd',
+            flexWrap: 'wrap',
+            justifyContent: 'center'
         }}>
             <button
                 style={buttonStyle('all')}

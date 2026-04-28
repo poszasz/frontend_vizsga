@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import TextBox from "../components/TextBox"
-import { registration } from "../api"
+import { checkAuth, registration } from "../api"
 import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 
@@ -42,11 +42,26 @@ export default function RegistrationPage() {
         },
         placeholder: { color: '#aaa' }
     }
+
+    useEffect(() => {
+        const verifyAuth = async () => {
+          try {
+            const { authenticated, user } = await checkAuth();
+            if (authenticated) {
+              navigation("/main");
+              return;
+            }
+          } catch (error) {
+            console.error("Auth error:", error);
+          }
+        };
+        verifyAuth();
+      }, []);
     
     return (
         
         <div className="vh-100 d-flex flex-column">
-            <Navbar title="Sign Up" showBackButton={true} />
+            <Navbar title="Sign Up" showBackButton={true} showHamburgerMenu={false}/>
 
             <div className="flex-grow-1 d-flex justify-content-center align-items-center p-4">
                 <div className="text-center" style={{ maxWidth: '1000px', width: '100%' }}>

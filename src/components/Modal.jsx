@@ -13,7 +13,7 @@ export default function Modal({ isOpen, onClose, title, children }) {
             justifyContent: 'center',
             alignItems: 'center',
             zIndex: 2000
-        }} onClick={onClose}>
+        }} >
             <div style={{
                 backgroundColor: '#ffffff',
                 borderRadius: '20px',

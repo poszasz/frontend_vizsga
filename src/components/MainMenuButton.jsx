@@ -1,8 +1,10 @@
 export default function MainMenuButton({ image, alt, text, onClick }) {
     const buttonContainerStyle = {
-        width: '350px',
-        height: '650px',
-        margin: '0 15px',
+        width: '100%',
+        maxWidth: '350px',
+        minWidth: '250px',
+        height: 'auto',
+        margin: '0 auto',
         cursor: 'pointer',
         borderRadius: '20px',
         overflow: 'hidden',
@@ -16,12 +18,13 @@ export default function MainMenuButton({ image, alt, text, onClick }) {
     }
 
     const imageContainerStyle = {
-        flex: 1,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '20px',
-        backgroundColor: '#f0f0f0'
+        backgroundColor: '#f0f0f0',
+        height: 'clamp(180px, 30vw, 250px)',  // Reszponzív magasság
+        width: '100%'
     }
 
     const imageStyle = {
@@ -34,8 +37,8 @@ export default function MainMenuButton({ image, alt, text, onClick }) {
     }
 
     const textStyle = {
-        padding: '20px 0',
-        fontSize: '1.5rem',
+        padding: 'clamp(12px, 3vw, 20px) 15px',
+        fontSize: 'clamp(1rem, 4vw, 1.5rem)',
         fontWeight: '600',
         color: '#333',
         textAlign: 'center',

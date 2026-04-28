@@ -1,6 +1,10 @@
 export default function ListingCard({ listing, user, onMakeOffer, onDelete }) {
-    const getImageUrl = (item) => {
-        return item.image_url || `https://via.placeholder.com/300x120?text=${item.manufacturer}+${item.name}`;
+    console.log(listing);
+    const carImages = import.meta.glob('../assets/*.{jpg,jpeg,png,jfif,webp}', { eager: true })
+    const getImageUrl = (listing) => {
+        const key = `../assets/${listing.image_url}`
+        return carImages[key]?.default
+            || `https://via.placeholder.com/300x150?text=${card.manufacturer}+${card.name}`;
     }
 
     return (
@@ -30,12 +34,12 @@ export default function ListingCard({ listing, user, onMakeOffer, onDelete }) {
                 alt={`${listing.manufacturer} ${listing.name}`}
                 style={{
                     width: '100%',
-                    height: '120px',
+                    height: '280px',
                     objectFit: 'cover',
                     borderBottom: '1px solid #eee'
                 }}
                 onError={(e) => {
-                    e.target.src = `https://via.placeholder.com/300x120?text=${listing.manufacturer}+${listing.name}`
+                    e.target.src = `/assets/carcardsLogo.png`
                 }}
             />
 
