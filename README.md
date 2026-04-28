@@ -1,3 +1,10 @@
+## Készítette
+- Tóth Ádám Kornél és Várhidi Olivér György (Backend, SQL adatbázis)
+- [GitHub repo](https://github.com/poszasz/backend_vizsga)
+
+---
+
+
 ## 🏪 Bevezetés
 - Car Cards egy autós kártyagyűjtő webalkalmazás. A játékosok packokat nyithatnak, autókat gyűjthetnek, és cserélhetnek egymással a beépített piactéren. A felhasználók ajánlatokat küldhetnek, amelyeket elfogadhatnak vagy elutasíthatnak. Az értesítések segítenek nyomon követni a tranzakciókat. A cél a legnagyobb és legértékesebb gyűjtemény összeállítása.
 
